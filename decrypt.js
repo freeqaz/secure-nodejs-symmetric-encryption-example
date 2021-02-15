@@ -17,7 +17,7 @@ function decryptDataWithKeyAndIv(encryptedData, key, iv, authTag) {
     let decryptedData = '';
     decipher.on('readable', () => {
       while (null !== (chunk = decipher.read())) {
-        decryptedData += chunk.toString('hex');
+        decryptedData += chunk.toString('base64');
       }
     });
 
@@ -25,7 +25,7 @@ function decryptDataWithKeyAndIv(encryptedData, key, iv, authTag) {
       resolve(decryptedData);
     });
 
-    decipher.write(encryptedData, 'hex');
+    decipher.write(encryptedData, 'base64');
     decipher.end();
   });
 }
@@ -39,7 +39,7 @@ const rl = readline.createInterface({
 function askQuestion(question) {
   return new Promise((resolve, reject) => {
     rl.question(question, (answer) => {
-      resolve(Buffer.from(answer, 'hex'));
+      resolve(Buffer.from(answer, 'base64'));
     });
   });
 }
@@ -48,13 +48,13 @@ function askQuestion(question) {
   const decryptionKey = await askQuestion('Key to decrypt data with? ');
   const iv = await askQuestion('IV to decrypt data with? ');
   const authTag = await askQuestion('Auth tag to authenticate data with? ');
-  const encryptedData = (await askQuestion('Encrypted data? ')).toString('hex');
+  const encryptedData = (await askQuestion('Encrypted data? ')).toString('base64');
 
   rl.close();
 
   try {
     const decryptedData = await decryptDataWithKeyAndIv(encryptedData, decryptionKey, iv, authTag);
-    console.log('Decrypted Data:', Buffer.from(decryptedData, 'hex').toString('utf8'));
+    console.log('Decrypted Data:', Buffer.from(decryptedData, 'base64').toString('utf8'));
   } catch(e) {
     console.error('Unable to decrypt data:', e);
   }

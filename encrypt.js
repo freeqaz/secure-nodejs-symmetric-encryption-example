@@ -49,7 +49,7 @@ async function encryptDataWithKey(data, key) {
     cipher.on('readable', () => {
       let chunk;
       while (null !== (chunk = cipher.read())) {
-        encryptedData += chunk.toString('hex');
+        encryptedData += chunk.toString('base64');
       }
     });
 
@@ -83,14 +83,14 @@ async function encryptDataWithKey(data, key) {
   // In production usage, this key would be constant and not randomly generated.
   // For this example, we will generate a key to use again for decryption.
   // Note: The key must be 128 bits (16 bytes) long exactly.
-  console.log('Encryption Key:', key.toString('hex'));
+  console.log('Encryption Key:', key.toString('base64'));
 
   const {encryptedData, iv, authTag} = await encryptDataWithKey(data, key);
 
   // These 3 values are required to decrypt the data. If any of them are missing, decryption will fail.
-  console.log('IV:', iv.toString('hex'));
-  console.log('Auth Tag:', authTag.toString('hex'));
-  console.log('Encrypted Data:', encryptedData.toString('hex'));
+  console.log('IV:', iv.toString('base64'));
+  console.log('Auth Tag:', authTag.toString('base64'));
+  console.log('Encrypted Data:', encryptedData.toString('base64'));
 })();
 
 
